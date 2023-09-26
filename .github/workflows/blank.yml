@@ -1,30 +1,40 @@
-name: Sync Translation Files
+name: Update ru.json
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-  sync-files:
+  update-ru-json:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Install jq
-      run: sudo apt-get install jq
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
-    - name: Read en.json
-      id: read-en
-      run: |
-        echo "::set-output name=content::$(cat test/lang/en.json | jq -c .)"
-    
-    - name: Write to ru.json
-      run: |
-        echo ${{ steps.read-en.outputs.content }} > test/lang/ru.json
+      - name: Install dependencies
+        run: npm install
 
-    - name: Commit and Push Changes
-      run: |
-        git add test/lang/ru.json
-        git commit -m "Sync translation files [skip ci]"
-        git push
+      - name: Compare en.json and ru.json
+        id: compare-json
+        run: |
+          DIFF=$(jq -S . lang/en.json | diff -u - lang/ru.json)
+          if [ -n "$DIFF" ]; then
+            echo "::set-output name=update_required::true"
+          else
+            echo "::set-output name=update_required::false"
+          fi
+
+      - name: Update ru.json
+        if: steps.compare-json.outputs.update_required == 'true'
+        run: |
+          cp lang/en.json lang/ru.json
+          git add lang/ru.json
+          git commit -m "Update ru.json based on en.json changes"
+          git push
