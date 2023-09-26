@@ -1,53 +1,45 @@
-name: Update ru.json
-
+name: Sync en.json with ru.json
 on:
   push:
-    branches:
-      - main
+    paths:
+      - 'lang/en.json'
 
 jobs:
-  update-ru-json:
+  sync:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Check out the code
         uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      
+      - name: Install Python
+        uses: actions/setup-python@v2
         with:
-          node-version: '14'
-
+          python-version: '3.x'
+      
       - name: Install dependencies
-        run: npm install
-
-      - name: Check if ru.json exists
-        id: check-ru-json
+        run: pip install requests
+      
+      - name: Fetch en.json and ru.json
         run: |
-          if [ -f "lang/ru.json" ]; then
-            echo "::set-output name=ru_json_exists::true"
-          else
-            echo "::set-output name=ru_json_exists::false"
-          fi
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3.raw" \
+               -o en.json \
+               -L https://api.github.com/repos/Tuc-tac/test/contents/lang/en.json
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3.raw" \
+               -o ru.json \
+               -L https://api.github.com/repos/Tuc-tac/test/contents/lang/ru.json
 
       - name: Compare en.json and ru.json
-        id: compare-json
-        run: |
-          if [ ${{ steps.check-ru-json.outputs.ru_json_exists }} == 'true' ]; then
-            DIFF=$(jq -S . lang/en.json | diff -u - lang/ru.json)
-            if [ -n "$DIFF" ]; then
-              echo "::set-output name=update_required::true"
-            else
-              echo "::set-output name=update_required::false"
-            fi
-          else
-            echo "::set-output name=update_required::true"
-          fi
+        run: python compare_json.py
 
-      - name: Update ru.json
-        if: steps.compare-json.outputs.update_required == 'true'
+      - name: Commit and push changes to ru.json if needed
         run: |
-          cp lang/en.json lang/ru.json
-          git add lang/ru.json
-          git commit -m "Update ru.json based on en.json changes"
-          git push
+          git config --global user.email "github-actions@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+
+          if [[ -n $(git status --porcelain) ]]; then
+            git add ru.json
+            git commit -m "Sync ru.json with en.json"
+            git push
+          fi
