@@ -21,14 +21,27 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Check if ru.json exists
+        id: check-ru-json
+        run: |
+          if [ -f "lang/ru.json" ]; then
+            echo "::set-output name=ru_json_exists::true"
+          else
+            echo "::set-output name=ru_json_exists::false"
+          fi
+
       - name: Compare en.json and ru.json
         id: compare-json
         run: |
-          DIFF=$(jq -S . lang/en.json | diff -u - lang/ru.json)
-          if [ -n "$DIFF" ]; then
-            echo "::set-output name=update_required::true"
+          if [ ${{ steps.check-ru-json.outputs.ru_json_exists }} == 'true' ]; then
+            DIFF=$(jq -S . lang/en.json | diff -u - lang/ru.json)
+            if [ -n "$DIFF" ]; then
+              echo "::set-output name=update_required::true"
+            else
+              echo "::set-output name=update_required::false"
+            fi
           else
-            echo "::set-output name=update_required::false"
+            echo "::set-output name=update_required::true"
           fi
 
       - name: Update ru.json
