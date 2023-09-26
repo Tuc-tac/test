@@ -1,9 +1,7 @@
 name: Sync Translation Files
 
 on:
-  push:
-    paths:
-      - 'test/lang/en.json'
+  workflow_dispatch:
 
 jobs:
   sync-files:
