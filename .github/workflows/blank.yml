@@ -27,8 +27,6 @@ jobs:
 
     - name: Commit and Push Changes
       run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
         git add test/lang/ru.json
         git commit -m "Sync translation files [skip ci]"
         git push
