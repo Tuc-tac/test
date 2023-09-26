@@ -35,8 +35,16 @@ jobs:
       - name: Compare en.json and ru.json
         run: python compare_json.py
 
+      - name: Configure Git identity
+        run: |
+         git config --global user.email "amd64fox@yandex.ru"
+         git config --global user.name "asd"
+        shell: bash
+
       - name: Commit and push changes to ru.json if needed
         run: |
+          git config --global user.email "github-actions@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
 
           if [[ -n $(git status --porcelain) ]]; then
             git add ru.json
