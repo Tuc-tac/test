@@ -86,11 +86,12 @@ function Run-SpotX {
 
 
 
-if ($MyInvocation.MyCommand.Path -ne $null) {
+if ($PSScriptRoot -eq $null) {
     Write-Host "online"
 } else {
-    Write-Host "offline"
+    Write-Host "local"
 }
+
 
 
 Test-InternetConnection
