@@ -85,6 +85,16 @@ function Run-SpotX {
 
 [Net.ServicePointManager]::SecurityProtocol = 3072
 
+Write-Host "123"
+Write-Host $env:HTTP_USER_AGENT
+
+if ($env:HTTP_USER_AGENT -ne $null) {
+    Write-Host "Скрипт был запущен онлайн."
+} else {
+    Write-Host "Скрипт был запущен локально."
+}
+
+
 Test-InternetConnection
 
 Run-SpotX -params $args
