@@ -67,7 +67,6 @@ function Run-SpotX {
         }
 
         if ($StatusCode -eq 200) {
-            $null = Send-Cutt
             iex "& {$($response)} $params"
             return
         }
@@ -89,9 +88,9 @@ Write-Host "123"
 Write-Host $env:HTTP_USER_AGENT
 
 if ($env:HTTP_USER_AGENT -ne $null) {
-    Write-Host "Скрипт был запущен онлайн."
+    Write-Host "online"
 } else {
-    Write-Host "Скрипт был запущен локально."
+    Write-Host "offline"
 }
 
 
