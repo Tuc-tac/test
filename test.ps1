@@ -87,7 +87,7 @@ function Run-SpotX {
 Write-Host "123"
 Write-Host $PSScriptRoot
 
-if ($PSScriptRoot -eq $null) {
+if ($PSScriptRoot -eq "" ) {
     Write-Host "online"
 } else {
     Write-Host "local"
