@@ -84,7 +84,8 @@ function Run-SpotX {
 
 [Net.ServicePointManager]::SecurityProtocol = 3072
 
-
+Write-Host "123"
+Write-Host $PSScriptRoot
 
 if ($PSScriptRoot -eq $null) {
     Write-Host "online"
