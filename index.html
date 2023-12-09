@@ -3,31 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Debug Mode</title>
+    <title>Redirect Page</title>
     <script>
-        // Функция для отладки (выводит текст с URL)
-        function debugMode(url) {
-            document.body.innerHTML = '<p>Debug Mode: ' + url + '</p>';
+        // Функция для перенаправления на страницу
+        function redirectToPage(url) {
+            window.location.href = url;
         }
 
         // Проверяем доступность первой страницы
         fetch('https://telegra.ph/SpotX-FAQ-09-19')
             .then(response => {
                 if (response.ok) {
-                    // Если статус ответа "OK", в режиме отладки выводим URL первой страницы
-                    debugMode('https://telegra.ph/SpotX-FAQ-09-19');
+                    // Если статус ответа "OK", перенаправляем на первую страницу
+                    redirectToPage('https://telegra.ph/SpotX-FAQ-09-19');
                 } else {
-                    // Если статус ответа не "OK", в режиме отладки выводим URL второй страницы
-                    debugMode('https://te.legra.ph/SpotX-FAQ-09-19');
+                    // Если статус ответа не "OK", перенаправляем на вторую страницу
+                    redirectToPage('https://te.legra.ph/SpotX-FAQ-09-19');
                 }
             })
             .catch(error => {
-                // В случае ошибки также в режиме отладки выводим URL второй страницы
-                debugMode('https://te.legra.ph/SpotX-FAQ-09-19');
+                // В случае ошибки также перенаправляем на вторую страницу
+                redirectToPage('https://te.legra.ph/SpotX-FAQ-09-19');
             });
     </script>
 </head>
 <body>
-    <p>Вы находитесь в режиме отладки.</p>
+    <p>Если вы не были автоматически перенаправлены, перейдите по <a href="https://telegra.ph/SpotX-FAQ-09-19">ссылке</a>.</p>
 </body>
 </html>
